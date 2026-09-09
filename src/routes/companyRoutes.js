@@ -1,7 +1,10 @@
 const express = require("express");
 
 const {
-    createCompany
+    createCompany,
+    getCompany,
+    updateCompany,
+    deleteCompany
 } = require("../controllers/companyController");
 
 const protect = require("../middleware/authMiddleware");
@@ -14,6 +17,24 @@ router.post(
     protect,
     authorize("recruiter"),
     createCompany
+);
+router.get(
+    "/",
+    protect,
+    authorize("recruiter"),
+    getCompany
+);
+router.put(
+    "/",
+    protect,
+    authorize("recruiter"),
+    updateCompany
+);
+router.delete(
+    "/",
+    protect,
+    authorize("recruiter"),
+    deleteCompany
 );
 
 module.exports = router; 

@@ -32,6 +32,107 @@ const createCompany = async (req, res) => {
     }
 };
 
+
+const getCompany = async (req, res) => {
+    try {
+        const company = await Company.findOne({
+            recruiterIds: req.user.userId
+        });
+
+        if (!company) {
+            return res.status(404).json({
+                success: false,
+                message: "Company not found"
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            data: company
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Failed to fetch company",
+            error: error.message
+        });
+    }
+};
+
+const updateCompany = async (req, res) => {
+    try {
+        const { name, description } = req.body;
+
+        const company = await Company.findOne({
+            recruiterIds: req.user.userId
+        });
+
+        if (!company) {
+            return res.status(404).json({
+                success: false,
+                message: "Company not found"
+            });
+        }
+
+        if (name) {
+            company.name = name;
+        }
+
+        if (description !== undefined) {
+            company.description = description;
+        }
+
+        await company.save();
+
+        res.status(200).json({
+            success: true,
+            message: "Company updated successfully",
+            data: company
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Failed to update company",
+            error: error.message
+        });
+    }
+};
+const deleteCompany = async (req, res) => {
+    try {
+        const company = await Company.findOne({
+            recruiterIds: req.user.userId
+        });
+
+        if (!company) {
+            return res.status(404).json({
+                success: false,
+                message: "Company not found"
+            });
+        }
+
+        await Company.deleteOne({
+            _id: company._id
+        });
+
+        res.status(200).json({
+            success: true,
+            message: "Company deleted successfully"
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Failed to delete company",
+            error: error.message
+        });
+    }
+};
+
 module.exports = {
-    createCompany
+    createCompany,
+    getCompany,
+    updateCompany,
+    deleteCompany
 };
